@@ -1,7 +1,7 @@
 #include "sphere.hpp"
 #include <cmath>
 
-Sphere::Sphere(Vec3 pos, float radius) : Object(pos), radius(radius) { }
+Sphere::Sphere(Vec3 pos, Color color, float radius) : Object(pos, color), radius(radius) { }
 
 // where <xo, yo, zo> is the origin of the ray, and <xd, yd, yd> is camera ray's direction.
 // <a, b, c> are spheres position vector
@@ -15,6 +15,7 @@ Sphere::Sphere(Vec3 pos, float radius) : Object(pos), radius(radius) { }
 // returns time on ray where the sphere intersects
 Hit Sphere::RayIntersect(const Ray3& ray)
 {
+    // treat sphere as origin
     float ox = ray.pos.x - pos.x;
     float oy = ray.pos.y - pos.y;
     float oz = ray.pos.z - pos.z;
@@ -30,11 +31,9 @@ Hit Sphere::RayIntersect(const Ray3& ray)
 
     // apply general quadratic formula
     // t = [-B +- sqrt(B^2 - 4AC)] / 2A
-    float t1  = (-b + discriminant) / 2 * a;
-    float t2  = (-b - discriminant) / 2 * a;
-    
     // return smaller value (closer point)
-    float t = t1 < t2 ? t1 : t2;
+    float t  = (-b - discriminant) / 2 * a;
+    
     Vec3 hitPos = ray.PosAtTime(t);
 
     return Hit(true, t, hitPos, (hitPos - pos).Normalized());

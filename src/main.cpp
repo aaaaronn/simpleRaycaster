@@ -6,10 +6,8 @@
 
 
 
-#define sizeX 255
-#define sizeY 255
-
-#define cameraPos vec3(sizeX/2, sizeY/2, -10)
+#define sizeX 120
+#define sizeY 120
 
 
 int main()
@@ -23,19 +21,33 @@ int main()
         return 1;
     }
     // ppm filetype magic number, width, height, maxval
-    image << "P6 " << sizeX+1 << " " << sizeY+1 << " 255\n";
+    image << "P6 " << sizeX << " " << sizeY << " 255\n";
 
 
-    for (int y = 0; y <= sizeY; y++)
+    Sphere obj(Vec3(0,0,0), Color(255,0,0), 3);
+
+
+    Camera cam(Vec3(0, 0, -10), Vec3(), 70, sizeX/sizeY, 10.0f);
+
+    for (int y = 0; y < sizeY; y++)
     {
-        for (int x = 0; x <= sizeX; x++)
+        for (int x = 0; x < sizeX; x++)
         {
-            unsigned char rgb[3] = {
-                static_cast<unsigned char>((x * 255.0f) / sizeX),
-                static_cast<unsigned char>((y * 255.0f) / sizeY),
-                0
-            };
-            image.write(reinterpret_cast<char*>(rgb), 3);
+            Color col = Color();
+            // flip y to render top left
+            float yf = 1.0f - y / (1.0f * (sizeY-1));
+            Vec3 rayPos = cam.LocalToWorld(x/(1.0f*(sizeX-1)), yf);
+            //std::cout << rayPos << std::endl;
+            Ray3 ray(rayPos, (rayPos - cam.pos).Normalized());
+            //std::cout << ray.dir << std::endl;
+
+            Hit hit = obj.RayIntersect(ray);
+            if (hit.hit)
+            {
+                col = obj.color;
+            }
+            
+            image.write(reinterpret_cast<char*>(&col), 3);
         }
     }
 
