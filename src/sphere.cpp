@@ -12,17 +12,15 @@ Sphere::Sphere(Vec3 pos, Color color, float radius) : Object(pos, color), radius
     C = [(xo - a)^2 + (yo - b)^2 + (zo - c^)2 - r^2]
 */
 
-// returns time on ray where the sphere intersects
+// returns Hit struct with data on intersection
 Hit Sphere::RayIntersect(const Ray3& ray)
 {
     // treat sphere as origin
-    float ox = ray.pos.x - pos.x;
-    float oy = ray.pos.y - pos.y;
-    float oz = ray.pos.z - pos.z;
+    Vec3 offsetRay(ray.origin.x - pos.x, ray.origin.y - pos.y, ray.origin.z - pos.z);
 
     float a = ray.dir * ray.dir;
-    float b = 2*(ray.dir.x * ox + ray.dir.y * oy + ray.dir.z * oz);
-    float c = ox * ox + oy * oy + oz * oz - radius * radius;
+    float b = 2*(ray.dir * offsetRay);
+    float c = offsetRay * offsetRay - radius * radius;
     
     float discriminant = b * b - 4 * a * c;
     if (discriminant < 0)
@@ -31,8 +29,8 @@ Hit Sphere::RayIntersect(const Ray3& ray)
 
     // apply general quadratic formula
     // t = [-B +- sqrt(B^2 - 4AC)] / 2A
-    // return smaller value (closer point)
-    float t  = (-b - discriminant) / 2 * a;
+    // get smaller value (closer point)
+    float t  = (-b - discriminant) / (2 * a);
     
     Vec3 hitPos = ray.PosAtTime(t);
 

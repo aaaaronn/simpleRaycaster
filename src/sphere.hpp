@@ -6,8 +6,9 @@
 class Sphere : public Object
 {
 public:
-    Sphere(Vec3 pos, Color color, float radius);
+    Sphere(Vec3 pos = Vec3(), Color color = Color::green, float radius = 1.0f);
     Hit RayIntersect(const Ray3& ray) override;
+
 private:
     float radius;
 };
