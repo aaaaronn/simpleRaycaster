@@ -75,7 +75,7 @@ int main()
                 }
             }
             if (closestSphere != nullptr)
-                // apply lambertian shading
+                // apply lambertian shading, set min brightness using std::max
                 col = closestSphere->color * std::max(0.225f, closestNormal * LightDir);
             
             
