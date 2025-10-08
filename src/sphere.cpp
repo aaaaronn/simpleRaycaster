@@ -1,7 +1,7 @@
 #include "sphere.hpp"
 #include <cmath>
 
-Sphere::Sphere(Vec3 pos, Color color, float radius) : Object(pos, color), radius(radius) { }
+Sphere::Sphere(Vec3 pos, float radius, Color color) : Object(pos, color), radius(radius) { }
 
 // where <xo, yo, zo> is the origin of the ray, and <xd, yd, yd> is camera ray's direction.
 // <a, b, c> are spheres position vector

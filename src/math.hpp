@@ -11,6 +11,7 @@ struct Vec3
     float Magnitude() const;
     float SqrMagnitude() const;
     Vec3 Normalized() const;
+    Vec3 Cross(const Vec3& other) const;
 
     
     float operator*(const Vec3& other) const;

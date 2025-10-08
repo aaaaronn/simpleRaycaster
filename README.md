@@ -17,3 +17,5 @@ g++ -o raycast ./src/*.cpp
 
 Generates an `image.ppm` in the project directory.
  - [Gimp](https://www.gimp.org/) can be used to view the .ppm
+
+#TODO ADD USAGE

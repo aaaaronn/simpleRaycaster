@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "sphere.hpp"
+#include "plane.hpp"
 #include "camera.hpp"
 
 
@@ -11,26 +12,36 @@
 #define sizeX 1920
 #define sizeY 1080
 
-// Cameras vertical FOV
+// vertical FOV
 #define FOV 50
+#define CAM_POS Vec3(0, 0, -10)
+#define CLIP_PLANE_DIST 10
+
+#define BACKGROUND_COLOR Color(0,0,0)
+#define LIGHT_POS Vec3(1.0f, 1.0f, -1.0f)
+#define MIN_BRIGHTNESS 0.225f
 
 
 int main()
 {
     // light direction for lambertian shading
-    Vec3 LightDir(0.0f, 2.0f, -1.0f);
-    LightDir = LightDir.Normalized();
+    Vec3 LightPos = LIGHT_POS.Normalized();
 
-    std::vector<Sphere> objects;
-
-    objects.emplace_back(Vec3(2, 4.5f,10), Color::green, 4);
-    objects.emplace_back(Vec3(5, -0.5f,4), Color::purple, 3);
-    objects.emplace_back(Vec3(0,0.55f,0), Color::red, 0.1);
-    objects.emplace_back(Vec3(-6,0,5), Color::blue, 5);
-    objects.emplace_back(Vec3(0,0,5), Color::yellow, 4);
+    std::vector<Object*> objects;
 
 
-    Camera cam(Vec3(0, 0, -10), FOV, float(sizeX)/sizeY, 10.0f);
+    objects.insert(objects.end(), {
+        new Sphere(Vec3(2, 4.5f,10), 4, Color::green),
+        new Sphere(Vec3(5, -0.5f,4), 3, Color::purple),
+        new Sphere(Vec3(0,0.55f,0), 0.1f, Color::red),
+        new Sphere(Vec3(-6,0,5), 5, Color::blue),
+        new Sphere(Vec3(0,0,5), 4, Color::yellow),
+        new Plane(Vec3(-7,0,0), 3, 3, Vec3(1, 0, -0.1f).Normalized(), Color::cyan),
+        new Plane(Vec3(-7,1.5f,0), 5, 5, Vec3(0.5f,-1, -0.1f).Normalized(), Color::red)
+    });
+
+
+    Camera cam(CAM_POS, FOV, float(sizeX)/sizeY, CLIP_PLANE_DIST);
 
 
     // create a ppm
@@ -49,34 +60,34 @@ int main()
     {
         for (int x = 0; x < sizeX; x++)
         {
-            Color col = Color();
+            Color col = BACKGROUND_COLOR;
             // flip y to render starting from top left (to support ppm)
             float yf = 1.0f - y / (sizeY-1.0f);
             // shoot ray from camera to current pixel
             Ray3 ray(cam.pos, (cam.LocalToWorld(x/(sizeX-1.0f), yf) - cam.pos).Normalized());
 
-            Sphere* closestSphere = nullptr;
+            Object* closestObj = nullptr;
             float closestTime = 99999.0f;
             Vec3 closestNormal;
 
             // check for intersections with ray
-            for (Sphere& obj : objects)
+            for (Object* obj : objects)
             {
-                Hit hit = obj.RayIntersect(ray);
+                Hit hit = obj->RayIntersect(ray);
                 if (hit.hit)
                 {
                     // because ray is normalized we can use time which is faster than magnitude
                     if (hit.time < closestTime)
                     {
                         closestTime = hit.time;
-                        closestSphere = &obj;
+                        closestObj = obj;
                         closestNormal = hit.normal;
                     }
                 }
             }
-            if (closestSphere != nullptr)
+            if (closestObj != nullptr)
                 // apply lambertian shading, set min brightness using std::max
-                col = closestSphere->color * std::max(0.225f, closestNormal * LightDir);
+                col = closestObj->color * std::max(MIN_BRIGHTNESS, closestNormal * LightPos);
             
             
             image.write(reinterpret_cast<char*>(&col), 3);
@@ -84,4 +95,9 @@ int main()
     }
 
     image.close();
+
+    for (Object* obj : objects)
+    {
+        delete obj;
+    }
 }
