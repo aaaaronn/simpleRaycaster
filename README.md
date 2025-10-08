@@ -1,10 +1,10 @@
 # Simple Raycaster
 
-A simple raycaster written entirely in C++, only using standard libraries.<br>
-Implements [lambertian shading](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/diffuse-lambertian-shading.html) and renders spheres<br>
-outputs images as [.ppm](https://netpbm.sourceforge.net/doc/ppm.html) files
+A simple raycaster written entirely in C++, using only standard libraries.<br>
+- Implements [lambertian shading](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/diffuse-lambertian-shading.html) and renders spheres and planes
+- outputs images as [.ppm](https://netpbm.sourceforge.net/doc/ppm.html) files
 
-![Sample render](/images/sampleRender.png)
+![Sample render featuring multicolored spheres and some planes](/images/sampleRender.png)
 
 # Building
 
@@ -16,6 +16,9 @@ g++ -o raycast ./src/*.cpp
 ```
 
 Generates an `image.ppm` in the project directory.
- - [Gimp](https://www.gimp.org/) can be used to view the .ppm
+- [Gimp](https://www.gimp.org/) can be used to view the .ppm
 
-#TODO ADD USAGE
+# Usage
+
+Adjust the `#define`'s at the top of `main.cpp` to your desire<br>
+Add/edit/remove objects with the object vector in main

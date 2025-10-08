@@ -24,13 +24,7 @@
 
 int main()
 {
-    // light direction for lambertian shading
-    Vec3 LightPos = LIGHT_POS.Normalized();
-
-    std::vector<Object*> objects;
-
-
-    objects.insert(objects.end(), {
+    std::vector<Object*> objects = {
         new Sphere(Vec3(2, 4.5f,10), 4, Color::green),
         new Sphere(Vec3(5, -0.5f,4), 3, Color::purple),
         new Sphere(Vec3(0,0.55f,0), 0.1f, Color::red),
@@ -38,10 +32,12 @@ int main()
         new Sphere(Vec3(0,0,5), 4, Color::yellow),
         new Plane(Vec3(-7,0,0), 3, 3, Vec3(1, 0, -0.1f).Normalized(), Color::cyan),
         new Plane(Vec3(-7,1.5f,0), 5, 5, Vec3(0.5f,-1, -0.1f).Normalized(), Color::red)
-    });
-
-
+    };
+    
     Camera cam(CAM_POS, FOV, float(sizeX)/sizeY, CLIP_PLANE_DIST);
+
+    // light direction
+    Vec3 LightPos = LIGHT_POS.Normalized();
 
 
     // create a ppm
@@ -56,18 +52,17 @@ int main()
     // ppm filetype magic number, width, height, maxval
     image << "P6 " << sizeX << " " << sizeY << " 255\n";
 
-    for (int y = 0; y < sizeY; y++)
+    // flip y to render starting from top left (to support .ppm format)
+    for (int y = sizeY; y >= 0; y--)
     {
         for (int x = 0; x < sizeX; x++)
         {
             Color col = BACKGROUND_COLOR;
-            // flip y to render starting from top left (to support ppm)
-            float yf = 1.0f - y / (sizeY-1.0f);
-            // shoot ray from camera to current pixel
-            Ray3 ray(cam.pos, (cam.LocalToWorld(x/(sizeX-1.0f), yf) - cam.pos).Normalized());
+            // shoot ray from camera towards current pixel
+            Ray3 ray(cam.pos, (cam.LocalToWorld(x/(sizeX-1.0f), y/(sizeY-1.0f)) - cam.pos).Normalized());
 
             Object* closestObj = nullptr;
-            float closestTime = 99999.0f;
+            float closestTime = 1.0E10f;
             Vec3 closestNormal;
 
             // check for intersections with ray
@@ -86,16 +81,16 @@ int main()
                 }
             }
             if (closestObj != nullptr)
-                // apply lambertian shading, set min brightness using std::max
+                // apply lambertian shading
                 col = closestObj->color * std::max(MIN_BRIGHTNESS, closestNormal * LightPos);
             
             
             image.write(reinterpret_cast<char*>(&col), 3);
         }
     }
-
     image.close();
 
+    // not neccesary but safe
     for (Object* obj : objects)
     {
         delete obj;
