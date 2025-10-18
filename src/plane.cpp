@@ -9,11 +9,11 @@ Plane::Plane(Vec3 pos, float width, float height, Vec3 normal, Color color)
 
 // plane equation P * N + d = 0;
 // p being point, N being normal, d being offset from known point
-Hit Plane::RayIntersect(const Ray3& ray)
+Hit Plane::RayIntersect(const Ray3& ray) const
 {
     float den = ray.dir * normal;
-    // exclude perpenducular and moving same direction as normal
-    if (den >= 0) return Hit();
+    // exclude perpenducular
+    if (den == 0) return Hit();
 
     // isolate t
     float t = -(ray.origin * normal + d) / den;

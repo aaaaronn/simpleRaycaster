@@ -13,7 +13,7 @@ Sphere::Sphere(Vec3 pos, float radius, Color color) : Object(pos, color), radius
 */
 
 // returns Hit struct with data on intersection
-Hit Sphere::RayIntersect(const Ray3& ray)
+Hit Sphere::RayIntersect(const Ray3& ray) const
 {
     // treat sphere as origin
     Vec3 offsetRay(ray.origin.x - pos.x, ray.origin.y - pos.y, ray.origin.z - pos.z);
@@ -31,6 +31,9 @@ Hit Sphere::RayIntersect(const Ray3& ray)
     // t = [-B +- sqrt(B^2 - 4AC)] / 2A
     // get smaller value (closer point)
     float t  = (-b - discriminant) / (2 * a);
+    // dont see circle when cam is inside it
+    if (t < 0)
+        return Hit();
     
     Vec3 hitPos = ray.PosAtTime(t);
 

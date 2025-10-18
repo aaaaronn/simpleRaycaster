@@ -24,14 +24,14 @@
 
 int main()
 {
-    std::vector<Object*> objects = {
-        new Sphere(Vec3(2, 4.5f,10), 4, Color::green),
-        new Sphere(Vec3(5, -0.5f,4), 3, Color::purple),
-        new Sphere(Vec3(0,0.55f,0), 0.1f, Color::red),
-        new Sphere(Vec3(-6,0,5), 5, Color::blue),
-        new Sphere(Vec3(0,0,5), 4, Color::yellow),
-        new Plane(Vec3(-7,0,0), 3, 3, Vec3(1, 0, -0.1f).Normalized(), Color::cyan),
-        new Plane(Vec3(-7,1.5f,0), 5, 5, Vec3(0.5f,-1, -0.1f).Normalized(), Color::red)
+    std::vector<std::shared_ptr<Object>> objects = {
+        std::make_shared<Sphere>(Vec3(2, 4.5f,10), 4, Color::green),
+        std::make_shared<Sphere>(Vec3(5, -0.5f,4), 3, Color::purple),
+        std::make_shared<Sphere>(Vec3(0,0.55f,0), 0.1f, Color::red),
+        std::make_shared<Sphere>(Vec3(-6,0,5), 5, Color::blue),
+        std::make_shared<Sphere>(Vec3(0,0,5), 4, Color::yellow),
+        std::make_shared<Plane>(Vec3(-7,0,0), 3, 3, Vec3(1, 0, -0.1f).Normalized(), Color::cyan),
+        std::make_shared<Plane>(Vec3(-7,1.5f,0), 5, 5, Vec3(0.5f,-1, -0.1f).Normalized(), Color::red)
     };
     
     Camera cam(CAM_POS, FOV, float(sizeX)/sizeY, CLIP_PLANE_DIST);
@@ -53,7 +53,7 @@ int main()
     image << "P6 " << sizeX << " " << sizeY << " 255\n";
 
     // flip y to render starting from top left (to support .ppm format)
-    for (int y = sizeY; y >= 0; y--)
+    for (int y = sizeY - 1; y >= 0; y--)
     {
         for (int x = 0; x < sizeX; x++)
         {
@@ -61,12 +61,12 @@ int main()
             // shoot ray from camera towards current pixel
             Ray3 ray(cam.pos, (cam.LocalToWorld(x/(sizeX-1.0f), y/(sizeY-1.0f)) - cam.pos).Normalized());
 
-            Object* closestObj = nullptr;
+            std::shared_ptr<Object> closestObj;
             float closestTime = 1.0E10f;
             Vec3 closestNormal;
 
             // check for intersections with ray
-            for (Object* obj : objects)
+            for (auto&& obj : objects)
             {
                 Hit hit = obj->RayIntersect(ray);
                 if (hit.hit)
@@ -80,7 +80,7 @@ int main()
                     }
                 }
             }
-            if (closestObj != nullptr)
+            if (closestObj)
                 // apply lambertian shading
                 col = closestObj->color * std::max(MIN_BRIGHTNESS, closestNormal * LightPos);
             
@@ -89,10 +89,4 @@ int main()
         }
     }
     image.close();
-
-    // not neccesary but safe
-    for (Object* obj : objects)
-    {
-        delete obj;
-    }
 }

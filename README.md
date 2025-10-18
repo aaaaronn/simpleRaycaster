@@ -20,5 +20,5 @@ Generates an `image.ppm` in the project directory.
 
 # Usage
 
-Adjust the `#define`'s at the top of `main.cpp` to your desire<br>
-Add/edit/remove objects with the object vector in main
+Adjust the `#define`'s at the top of [main.cpp](src/main.cpp) to your desire<br>
+Add/edit/remove objects with the [objects](src/main.cpp#L27) vector in main

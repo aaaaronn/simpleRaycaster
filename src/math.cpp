@@ -15,8 +15,9 @@ float Vec3::SqrMagnitude() const
 
 Vec3 Vec3::Normalized() const
 {
-    Vec3 norm = *this * this->Magnitude();
-    return *this / this->Magnitude();
+    float mag = this->Magnitude();
+    if (mag == 0) return Vec3(0,0,0);
+    return *this / mag;
 }
 
 Vec3 Vec3::Cross(const Vec3& other) const
