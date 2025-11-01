@@ -14,7 +14,7 @@ Camera::Camera(Vec3 pos, float fov, float aspect, float clipPlane) : pos(pos), f
     //std::cout << "height: " << planeHeight << "   width:" << planeWidth << "   bottleft: " << bottomLeftLocal << std::endl;
 }
 
-Vec3 Camera::LocalToWorld(float x, float y)
+Vec3 Camera::LocalToWorld(float x, float y) const
 {
     Vec3 pointLocal = bottomLeftLocal + Vec3(planeWidth * x, planeHeight * y);
     // convert back from local space

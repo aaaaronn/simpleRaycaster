@@ -7,19 +7,18 @@
 #include "camera.hpp"
 
 
-
 // size of the output image, in pixels
-#define sizeX 1920
-#define sizeY 1080
+constexpr int sizeX = 1920;
+constexpr int sizeY = 1080;
 
 // vertical FOV
-#define FOV 50
-#define CAM_POS Vec3(0, 0, -10)
-#define CLIP_PLANE_DIST 10
+constexpr float FOV = 50.0f;
+constexpr Vec3 CAM_POS = Vec3(0, 0, -10);
+constexpr float CLIP_PLANE_DIST = 10.0f;
 
-#define BACKGROUND_COLOR Color(0,0,0)
-#define LIGHT_POS Vec3(1.0f, 1.0f, -1.0f)
-#define MIN_BRIGHTNESS 0.225f
+constexpr Color BACKGROUND_COLOR = Color(0,0,0);
+constexpr Vec3 LIGHT_POS = Vec3(1.0f, 1.0f, -1.0f);
+constexpr float MIN_BRIGHTNESS = 0.225f;
 
 
 int main()
