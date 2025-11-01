@@ -14,10 +14,10 @@ struct Hit
 struct Color
 {
     // store as a char instead of a float/int to use with ppm file (only accepts one byte)
-    constexpr Color(unsigned char r = 0, unsigned char g = 0, unsigned char b = 0) : r(r), g(g), b(b) { }
+    Color(unsigned char r = 0, unsigned char g = 0, unsigned char b = 0);
     unsigned char r, g, b;
 
-    constexpr Color operator*(float scalar) const;
+    Color operator*(float scalar);
 
 
     static const Color red;

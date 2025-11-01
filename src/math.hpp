@@ -6,21 +6,21 @@
 
 struct Vec3
 {
-    constexpr Vec3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) { }
+    Vec3(float x = 0, float y = 0, float z = 0);
 
-    constexpr float Magnitude() const;
-    constexpr float SqrMagnitude() const;
-    constexpr Vec3 Normalized() const;
-    constexpr Vec3 Cross(const Vec3& other) const;
+    float Magnitude() const;
+    float SqrMagnitude() const;
+    Vec3 Normalized() const;
+    Vec3 Cross(const Vec3& other) const;
 
     
-    constexpr float operator*(const Vec3& other) const;
+    float operator*(const Vec3& other) const;
 
-    constexpr Vec3 operator*(float scalar) const;
-    constexpr Vec3 operator/(float scalar) const;
+    Vec3 operator*(float scalar) const;
+    Vec3 operator/(float scalar) const;
     
-    constexpr Vec3 operator+(const Vec3& other) const;
-    constexpr Vec3 operator-(const Vec3& other) const;
+    Vec3 operator+(const Vec3& other) const;
+    Vec3 operator-(const Vec3& other) const;
     
     friend std::ostream& operator<<(std::ostream& os, const Vec3& obj);
     
